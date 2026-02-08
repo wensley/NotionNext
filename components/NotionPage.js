@@ -1,5 +1,5 @@
 import { siteConfig } from '@/lib/config'
-import { compressImage, mapImgUrl } from '@/lib/notion/mapImage'
+import { compressImage, mapImgUrl } from '@/lib/db/notion/mapImage'
 import { isBrowser, loadExternalResource } from '@/lib/utils'
 import mediumZoom from '@fisch0920/medium-zoom'
 import 'katex/dist/katex.min.css'
@@ -116,8 +116,7 @@ const NotionPage = ({ post, className }) => {
     return () => clearTimeout(timer)
   }, [post])
 
-  const cleanBlockMap = cleanBlocksWithWarn(post.blockMap);
-
+  const cleanBlockMap = cleanBlocksWithWarn(post?.blockMap);
 
   return (
     <div
@@ -144,10 +143,11 @@ const NotionPage = ({ post, className }) => {
 }
 
 function cleanBlocksWithWarn(blockMap) {
+  if(!blockMap) return blockMap;
   const cleanedBlocks = {};
   const removedBlockIds = [];
 
-  for (const [id, block] of Object.entries(blockMap.block || {})) {
+  for (const [id, block] of Object.entries(blockMap?.block || {})) {
     if (!block?.value?.id) {
       removedBlockIds.push(id);
       continue;
